@@ -1,0 +1,16 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+config MOTOR_FEEDBACK
+	bool "Generic motor feedback sensor"
+	default y
+	depends on DT_HAS_ZEPHYR_MOTOR_FEEDBACK_ENABLED
+	select SENSOR
+	help
+	  Enable the "zephyr,motor-feedback" sensor, a child of a
+	  "zephyr,motor" node. It serves the raw feedback of its parent
+	  (shaft angle and speed, and the phase currents when measured)
+	  through the Zephyr sensor API, using only motor_get_feedback() from
+	  the generic motor API. Initializes at SENSOR_INIT_PRIORITY, which
+	  must stay above MOTOR_INIT_PRIORITY.

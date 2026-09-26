@@ -4,6 +4,4 @@
 
 zephyr_library()
 
-zephyr_library_sources_ifdef(CONFIG_MOTOR_SHELL motor_shell.c)
-
-add_subdirectory_ifdef(CONFIG_MOTOR_FEEDBACK feedback)
+zephyr_library_sources(motor_feedback.c)

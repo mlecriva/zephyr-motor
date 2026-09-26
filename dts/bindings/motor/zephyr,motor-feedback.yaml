@@ -1,0 +1,15 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Feedback of a motor, as a sensor.
+
+  Child of a zephyr,motor node. Serves the shaft angle and speed its parent
+  reports, raw, as SENSOR_CHAN_ROTATION and SENSOR_CHAN_RPM, and the phase
+  currents, when the motor measures them, as the private channels of
+  drivers/sensor/motor_feedback.h.
+
+compatible: "zephyr,motor-feedback"
+
+include: [sensor-device.yaml]
