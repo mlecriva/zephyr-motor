@@ -2,8 +2,6 @@
 # Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 
-menu "Drivers"
-rsource "bldc_adc/Kconfig"
-rsource "bldc_hall/Kconfig"
-rsource "pwm_bridge/Kconfig"
-endmenu
+zephyr_library()
+
+zephyr_library_sources_ifdef(CONFIG_BLDC_ADC_STM32 bldc_adc_stm32.c)

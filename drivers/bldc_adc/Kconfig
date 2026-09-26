@@ -1,0 +1,27 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig BLDC_ADC
+	bool "PWM-synchronized ADC acquisition drivers"
+	help
+	  Enable drivers for the bldc_adc device class.
+
+if BLDC_ADC
+
+module = BLDC_ADC
+module-str = bldc_adc
+source "subsys/logging/Kconfig.template.log_config"
+
+config BLDC_ADC_INIT_PRIORITY
+	int "PWM-synchronized ADC driver init priority"
+	default 51
+	help
+	  Must stay strictly below the priority of any consumer, which reads or
+	  registers its sample handler at its own init. A read waits for the
+	  bridge trigger, so that consumer must also init after
+	  PWM_BRIDGE_INIT_PRIORITY.
+
+rsource "Kconfig.stm32"
+
+endif # BLDC_ADC

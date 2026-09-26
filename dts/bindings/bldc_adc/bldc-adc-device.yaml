@@ -1,0 +1,34 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Common properties of a bldc_adc three-channel acquisition device.
+
+include: base.yaml
+
+properties:
+  pwm:
+    type: phandle
+    required: true
+    description: |
+      The bridge whose sync trigger clocks this acquisition, once per PWM
+      period. Its trigger output must be enabled, or this device never
+      converts.
+
+  channels:
+    type: array
+    required: true
+    description: |
+      The three ADC channel numbers, in acquisition order. That order is the
+      order the driver reports results in, and it is fixed for the lifetime of
+      the device.
+
+  frontend-settle-ms:
+    type: int
+    default: 50
+    description: |
+      Uptime, in milliseconds, to reach before any reference-dependent
+      measurement, so the reference and the analog front-end settle.
+      Measured from boot rather than per device, so several instances on the
+      same supply pay it once.

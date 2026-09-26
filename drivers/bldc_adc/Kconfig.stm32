@@ -1,0 +1,24 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+config BLDC_ADC_STM32
+	bool "STM32 three-channel PWM-synchronized ADC acquisition"
+	default y
+	depends on DT_HAS_ST_STM32_BLDC_ADC_ENABLED
+	select USE_STM32_LL_ADC
+	help
+	  Enable the three-channel acquisition driver for STM32 ADCs. Runs an
+	  injected conversion group triggered once per PWM period by a
+	  three-phase bridge, and reports raw counts plus the measured VREF+.
+
+if BLDC_ADC_STM32
+
+config BLDC_ADC_STM32_READ_TIMEOUT_US
+	int "adc read per-call deadline (us)"
+	default 2000
+	help
+	  How long bldc_adc_read() waits for the next triggered sequence
+	  before returning -ETIMEDOUT.
+
+endif # BLDC_ADC_STM32

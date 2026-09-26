@@ -1,0 +1,15 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  STM32 three-channel PWM-synchronized ADC acquisition.
+
+  Runs a three-rank injected conversion group on one ADC, triggered in hardware
+  once per PWM period by the TRGO2 of the bridge named in the pwm property.
+  The three conversions therefore always land at the same point in the
+  switching cycle.
+
+compatible: "st,stm32-bldc-adc"
+
+include: [bldc-adc-device.yaml]
