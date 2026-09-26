@@ -1,0 +1,38 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  STM32 Hall acquisition through the timer hardware XOR (TI1S).
+
+  The three Hall lines feed CH1/CH2/CH3 of one timer. Their XOR resets the
+  counter on every edge and a capture latches the elapsed interval: six timed
+  edges per electrical revolution.
+
+compatible: "st,stm32-bldc-hall-xor"
+
+include: [pinctrl-device.yaml, bldc-hall-device.yaml]
+
+properties:
+  pinctrl-0:
+    required: true
+    description: |
+      CH1, CH2 and CH3 of the parent timer, one pin per Hall line. Any line
+      may go to any channel and the listing order is free: hall-gpios alone
+      defines U/V/W.
+
+  pinctrl-names:
+    required: true
+    const: ["default"]
+    description: |
+      The driver applies PINCTRL_STATE_DEFAULT at init, which only this name
+      maps to. Any other name fails the build or the device init.
+
+  hall-gpios:
+    description: |
+      The same three pins as pinctrl-0, in U/V/W order: this order alone
+      defines the phases. The driver reads the Hall state from their input
+      registers, which stay valid while the pins are muxed to the timer.
+
+      Levels are read raw and the pins are set up by pinctrl, so every flag
+      cell must be 0 (the build fails otherwise). Put any pull in pinctrl-0.

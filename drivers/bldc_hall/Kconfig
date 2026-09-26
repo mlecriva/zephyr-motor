@@ -1,0 +1,25 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig BLDC_HALL
+	bool "Three-line Hall sensor drivers"
+	help
+	  Enable drivers for the bldc_hall device class (drivers/bldc_hall.h).
+
+if BLDC_HALL
+
+module = BLDC_HALL
+module-str = bldc_hall
+source "subsys/logging/Kconfig.template.log_config"
+
+config BLDC_HALL_INIT_PRIORITY
+	int "Three-line Hall driver init priority"
+	default 51
+	help
+	  Must stay strictly below the priority of any consumer, which checks
+	  this device ready and registers its edge handler at its own init.
+
+rsource "Kconfig.stm32"
+
+endif # BLDC_HALL

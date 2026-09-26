@@ -1,0 +1,15 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+config BLDC_HALL_STM32
+	bool "STM32 timer-XOR Hall acquisition"
+	default y
+	depends on DT_HAS_ST_STM32_BLDC_HALL_XOR_ENABLED
+	select PINCTRL
+	select GPIO
+	select USE_STM32_LL_TIM
+	help
+	  Implements the bldc_hall device class (drivers/bldc_hall.h) through
+	  the timer hardware XOR and slave-mode reset: every commutation edge
+	  is timed, so six edges per electrical revolution.
