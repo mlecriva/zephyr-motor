@@ -1,0 +1,50 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  STM32 bridge output stage (advanced-control timer).
+
+  Drives one to four half-bridge legs from a single advanced-control timer
+  (TIM1 or TIM8).
+
+  The timer is owned exclusively by this driver. Any sibling child of the same
+  timers node must stay disabled, or the build fails.
+
+compatible: "st,stm32-pwm-bridge"
+
+include: [pinctrl-device.yaml, pwm-bridge-device.yaml]
+
+properties:
+  pinctrl-0:
+    required: true
+    description: |
+      Phase pins: CHx and CHxN of every channel listed in st,leg-channels, plus
+      BKIN when break-input is set.
+
+  pinctrl-names:
+    required: true
+    const: ["default"]
+    description: |
+      The driver applies PINCTRL_STATE_DEFAULT at init, which only this name
+      maps to. Any other name fails the build or the device init.
+
+  st,leg-channels:
+    type: array
+    required: true
+    description: |
+      Timer channels carrying the legs, in leg order.
+      e.g. <1 2 3> makes channel 1 the U leg, 2 the V leg, 3 the W leg. 
+
+  deadtime-ns:
+    description: |
+      Encoded into the timer DTG field at init, rounding up.
+
+  sync-trigger-enable:
+    description: |
+      Drives TRGO2 internal hardware trigger from the update event.
+
+  break-input:
+    description: |
+      BKIN, active low and unfiltered. The BKIN pin must be listed in
+      pinctrl-0.

@@ -1,0 +1,28 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig PWM_BRIDGE
+	bool "Bridge output stage drivers"
+	help
+	  Enable drivers for the bridge output stage device class
+	  (drivers/pwm_bridge.h).
+
+if PWM_BRIDGE
+
+module = PWM_BRIDGE
+module-str = pwm_bridge
+source "subsys/logging/Kconfig.template.log_config"
+
+config PWM_BRIDGE_INIT_PRIORITY
+	int "Bridge output stage init priority"
+	default 50
+	help
+	  This class does not select PWM, so it cannot inherit
+	  PWM_INIT_PRIORITY. Kept at the same value. Must stay strictly below
+	  the priority of any consumer, which reads the bridge capabilities at
+	  its own init.
+
+rsource "Kconfig.stm32"
+
+endif # PWM_BRIDGE

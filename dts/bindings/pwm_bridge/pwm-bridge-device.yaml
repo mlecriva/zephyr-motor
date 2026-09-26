@@ -1,0 +1,37 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Common properties of a pwm_bridge output stage.
+
+include: base.yaml
+
+properties:
+  pwm-frequency-hz:
+    type: int
+    required: true
+    description: |
+      Switching frequency of the carrier, in Hz. Shared by every leg of the
+      bridge and fixed at init.
+
+  deadtime-ns:
+    type: int
+    required: true
+    description: |
+      Dead-time inserted between the falling edge of one switch of a leg and
+      the rising edge of the other, in nanoseconds. Prevents shoot-through.
+
+  sync-trigger-enable:
+    type: boolean
+    description: |
+      Drive the period-synchronous trigger from the carrier's update event, 
+      e.g. to synchronize an ADC measurement to the carrier period.
+      Unset leaves it inactive.
+
+  break-input:
+    type: boolean
+    description: |
+      Wire the hardware cut-off input to the output stage. On assertion the
+      hardware disables every switch with no software involvement.
+      Unset leaves it inactive.
