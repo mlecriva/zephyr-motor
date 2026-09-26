@@ -4,4 +4,5 @@
 
 add_subdirectory_ifdef(CONFIG_BLDC_ADC bldc_adc)
 add_subdirectory_ifdef(CONFIG_BLDC_HALL bldc_hall)
+add_subdirectory_ifdef(CONFIG_MOTOR motor)
 add_subdirectory_ifdef(CONFIG_PWM_BRIDGE pwm_bridge)

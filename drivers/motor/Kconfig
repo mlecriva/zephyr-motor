@@ -1,0 +1,34 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig MOTOR
+	bool "Motor drivers"
+	help
+	  Enable drivers for the motor device class (drivers/motor.h).
+
+if MOTOR
+
+module = MOTOR
+module-str = motor
+source "subsys/logging/Kconfig.template.log_config"
+
+config MOTOR_INIT_PRIORITY
+	int "Motor driver init priority"
+	default 60
+	help
+	  Must stay strictly above the priority of every device a motor binds.
+	  Must also stay strictly below the priority of any consumer, such as
+	  SENSOR_INIT_PRIORITY for a zephyr,motor-feedback child.
+
+config MOTOR_SHELL
+	bool "Motor shell commands"
+	default y
+	depends on SHELL
+	depends on DT_HAS_ZEPHYR_MOTOR_ENABLED
+	help
+	  Enable the "motor" shell command tree (list, start, stop, voltage)
+	  over every "zephyr,motor" node, through the generic motor API only.
+	  Implementations may add their own subcommands to it.
+
+endif # MOTOR

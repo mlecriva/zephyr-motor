@@ -1,0 +1,14 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Common compatible of a motor driven through the motor API.
+
+  A motor node lists its implementation compatible first and this one
+  second, so consumers enumerate motors without knowing the implementation.
+  Each implementation binding includes this one and adds its own properties.
+
+compatible: "zephyr,motor"
+
+include: base.yaml
