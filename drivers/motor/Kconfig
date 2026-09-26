@@ -31,6 +31,7 @@ config MOTOR_SHELL
 	  over every "zephyr,motor" node, through the generic motor API only.
 	  Implementations may add their own subcommands to it.
 
+rsource "Kconfig.bldc_6step_bridge_hall"
 rsource "feedback/Kconfig"
 
 endif # MOTOR

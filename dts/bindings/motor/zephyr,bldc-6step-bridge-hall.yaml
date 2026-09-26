@@ -1,0 +1,57 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  6-step BLDC motor on a pwm_bridge and a bldc_hall device.
+
+  Commutates a three-leg pwm_bridge from the edges of a bldc_hall device,
+  and can bind a bldc_adc sampler synchronized to the same bridge, all named
+  by phandle. The node owns no hardware of its own.
+
+compatible: "zephyr,bldc-6step-bridge-hall"
+
+include: zephyr,motor.yaml
+
+properties:
+  pwm:
+    type: phandle
+    required: true
+    description: |
+      The pwm_bridge driving the three motor phases. It must drive exactly
+      three legs and support the HI_Z, PWM and FORCE_LOW leg states.
+
+  hall:
+    type: phandle
+    required: true
+    description: |
+      The bldc_hall device reading the Hall sensors of this motor. Each of
+      its edges triggers a commutation.
+
+  adc:
+    type: phandle
+    description: |
+      The bldc_adc sampling the three phase currents of this motor, its
+      channels in U/V/W order. It must be synchronized to the bridge named
+      in pwm, or the build fails. Unset leaves the motor without current
+      sensing.
+
+  shunt-resistance-uohm:
+    type: int
+    description: |
+      Phase-current shunt resistance, in microohms. Required with adc, to
+      convert its counts to milliamps with current-gain-milli.
+
+  current-gain-milli:
+    type: int
+    description: |
+      Current-sense amplifier gain, scaled by 1000 (e.g. 2100 = gain 2.10).
+      Required with adc.
+
+  motor-pole-pairs:
+    type: int
+    default: 1
+    description: |
+      Rotor pole pairs. The Hall sensors see electrical revolutions, the
+      feedback reports the shaft: one mechanical revolution every
+      motor-pole-pairs electrical ones.
