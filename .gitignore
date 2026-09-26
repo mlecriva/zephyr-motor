@@ -1,0 +1,12 @@
+# Project's ignore: ignores artifacts related to this project
+#
+# Note: do *not* add your tools' artifact here (e.g. .DS_store, .vscode/, …)
+# Use your global personal gitignore:
+#       $EDITOR $(git config --global --get core.excludesFile)
+# If none exists, good candidates are ~/.gitignore, ~/.git/gitignore or
+# ~/.config/git/gitignore
+
+# build dir
+**/build*
+
+# WARNING: do not add personnal tools' rule here, cf. top of the file's Note.
