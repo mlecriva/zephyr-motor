@@ -1,0 +1,20 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+config PID
+	bool "PID regulator library"
+	imply FPU if CPU_HAS_FPU
+	help
+	  Enable a PID regulator with output saturation and back-calculation
+	  anti-windup, one state per handle. Floating-point (float32)
+	  implementation: FPU is implied on SoCs that have one, and the
+	  application may still disable it.
+
+if PID
+
+module = PID
+module-str = pid
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # PID
