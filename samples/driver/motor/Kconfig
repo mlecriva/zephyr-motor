@@ -1,0 +1,12 @@
+menu "Zephyr"
+source "Kconfig.zephyr"
+endmenu
+
+module = APP
+module-str = app
+
+config APP_NAME
+	string "Application name"
+	default "$(module-str)"
+
+source "subsys/logging/Kconfig.template.log_config"
