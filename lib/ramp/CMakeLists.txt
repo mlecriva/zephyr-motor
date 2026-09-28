@@ -2,5 +2,6 @@
 # Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 
-add_subdirectory_ifdef(CONFIG_PID pid)
-add_subdirectory_ifdef(CONFIG_RAMP ramp)
+zephyr_library()
+
+zephyr_library_sources(ramp.c)

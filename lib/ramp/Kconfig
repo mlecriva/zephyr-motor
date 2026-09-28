@@ -1,0 +1,13 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+config RAMP
+	bool "Ramp library"
+	imply FPU if CPU_HAS_FPU
+	help
+	  Enable a ramp: a slew-rate limiter moving an output toward a
+	  target once per step, with separate rates away from and toward 0,
+	  one state per handle. Floating-point (float32) implementation:
+	  FPU is implied on SoCs that have one, and the application may
+	  still disable it.
