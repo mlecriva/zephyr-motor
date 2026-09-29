@@ -1,0 +1,106 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Closed speed loop over a motor and the sensor serving its speed.
+
+  Every control-period-ms, the setpoint is ramped toward the requested
+  speed, then a speed PID turns the error into the signed voltage applied
+  to the motor, in per-mille of the supply. There is no inner current
+  loop.
+
+  Gains and bounds are integers scaled by 1000 or 1000000 only because
+  devicetree has no floating-point type; the controller converts them to
+  floats at init.
+
+compatible: "zephyr,motor-control"
+
+include: base.yaml
+
+properties:
+  motor:
+    type: phandle
+    required: true
+    description: |
+      The zephyr,motor node driven, through the generic motor API.
+
+  motor-sensor:
+    type: phandle
+    required: true
+    description: |
+      The sensor serving the speed of that motor as SENSOR_CHAN_RPM,
+      signed by the direction, typically its zephyr,motor-feedback child.
+
+  control-period-ms:
+    type: int
+    default: 10
+    description: |
+      Regulation period in milliseconds, also the PID period. Every
+      controller shares one work queue thread: below 2 ms, check that the
+      tick of all of them stays well within the period.
+
+  speed-pid-kp-micro:
+    type: int
+    default: 0
+    description: |
+      Proportional gain × 1000000, in per-mille of the supply voltage per
+      RPM of error.
+
+  speed-pid-ki-micro:
+    type: int
+    default: 0
+    description: |
+      Integral gain × 1000000, in per-mille of the supply voltage per RPM
+      of error and per second.
+
+  speed-pid-kd-micro:
+    type: int
+    default: 0
+    description: |
+      Derivative gain × 1000000, in per-mille of the supply voltage per
+      RPM/s of error change.
+
+  speed-pid-integral-min-milli:
+    type: int
+    default: -1000000
+    description: |
+      Lower bound of the integral accumulator × 1000, in per-mille of the
+      supply voltage.
+
+  speed-pid-integral-max-milli:
+    type: int
+    default: 1000000
+    description: |
+      Upper bound of the integral accumulator × 1000, in per-mille of the
+      supply voltage.
+
+  output-min-milli:
+    type: int
+    default: -1000
+    description: |
+      Lower bound of the voltage applied, in per-mille of the supply; the
+      sign sets the direction, -1000 is full reverse.
+
+  output-max-milli:
+    type: int
+    default: 1000
+    description: |
+      Upper bound of the voltage applied, in per-mille of the supply; 1000
+      is full forward.
+
+  ramp-acceleration-rpm-per-s:
+    type: int
+    required: true
+    description: |
+      Slew rate of the setpoint while its magnitude grows, away from 0, in
+      RPM/s. Also the deceleration when ramp-deceleration-rpm-per-s is
+      unset. No default: it depends on the motor and its load.
+
+  ramp-deceleration-rpm-per-s:
+    type: int
+    description: |
+      Slew rate of the setpoint while its magnitude shrinks toward 0, in
+      RPM/s. Unset uses ramp-acceleration-rpm-per-s. A lower value keeps
+      the braking of a loaded rotor gentle: an abrupt setpoint drop
+      saturates the PID to reverse voltage.

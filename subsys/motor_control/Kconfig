@@ -1,0 +1,56 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig MOTOR_CONTROL
+	bool "Motor control"
+	default y
+	depends on DT_HAS_ZEPHYR_MOTOR_CONTROL_ENABLED
+	depends on MOTOR
+	depends on SENSOR
+	select PID
+	select RAMP
+	help
+	  Enable the "zephyr,motor-control" devices: a closed speed loop
+	  (setpoint ramp and speed PID) over a "zephyr,motor" node and the
+	  sensor serving its speed, run from a dedicated work queue.
+
+if MOTOR_CONTROL
+
+module = MOTOR_CONTROL
+module-str = motor_control
+source "subsys/logging/Kconfig.template.log_config"
+
+config MOTOR_CONTROL_INIT_PRIORITY
+	int "Motor control init priority"
+	default 91
+	help
+	  Must stay strictly above the priority of the motor and of its speed
+	  sensor, SENSOR_INIT_PRIORITY for a zephyr,motor-feedback child.
+
+config MOTOR_CONTROL_WORKQ_STACK_SIZE
+	int "Motor control work queue stack size"
+	default 1024
+	help
+	  Stack of the thread running the regulation tick of every
+	  controller: a sensor read, a PID step and a motor command.
+
+config MOTOR_CONTROL_WORKQ_PRIORITY
+	int "Motor control work queue thread priority"
+	default -2
+	help
+	  A cooperative (negative) priority keeps application threads from
+	  delaying the regulation tick. The default leaves -1 to system
+	  services that must preempt it.
+
+config MOTOR_CONTROL_SHELL
+	bool "Motor control shell commands"
+	default y
+	depends on SHELL
+	help
+	  Enable the "mc" shell command tree (list, start, stop, reset,
+	  target, speed) over every "zephyr,motor-control" node, to run
+	  the speed loop and tune its gains. Printing the gains needs
+	  CBPRINTF_FP_SUPPORT.
+
+endif # MOTOR_CONTROL
