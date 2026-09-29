@@ -1,0 +1,17 @@
+# Copyright (c) 2026 Rtone
+# Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+sample:
+  name: Motor controller shell
+  description: >
+    Run a closed speed loop on a motor and tune it from the shell, through
+    the motor control subsystem
+tests:
+  sample.subsys.motor_control:
+    build_only: true
+    platform_allow:
+      - nucleo_g431rb
+    integration_platforms:
+      - nucleo_g431rb
+    tags: motor

@@ -1,0 +1,10 @@
+BOARD?=nucleo_g431rb
+
+BUILD_ROOT_DIR?=build
+BUILD_DIR?=$(BUILD_ROOT_DIR)/$(BOARD)
+
+.DEFAULT_GOAL:=build
+
+MAKEFLAGS+=--warn-undefined-variables
+MAKEFLAGS+=--no-builtin-rules
+MAKEFLAGS+=--no-print-directory

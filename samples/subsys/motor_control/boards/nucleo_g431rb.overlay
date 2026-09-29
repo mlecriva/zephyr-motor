@@ -1,0 +1,121 @@
+/*
+ * Copyright (c) 2026 Rtone
+ * Copyright (c) 2026 Mathis Lécrivain <lecrivain.mathis@gmail.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ * X-NUCLEO-IHM16M1 shield: STSPIN830 reworked for MODE=H, factory 3-shunt
+ * jumpers. See the README of samples/driver/motor for the setup.
+ */
+
+/* Nucleo peripherals routed to pins the shield drives or senses */
+&spi1 {
+	status = "disabled"; /* PA7: phase W current */
+};
+
+&spi2 {
+	status = "disabled"; /* PB12..PB15: EN/FAULT and low-side inputs */
+};
+
+&spi3 {
+	status = "disabled"; /* PA15: Hall 1 */
+};
+
+&usart1 {
+	status = "disabled"; /* PC4: NTC */
+};
+
+&pwm2 {
+	status = "disabled"; /* TIM2 reads the Hall sensors */
+};
+
+/ {
+	pwmleds {
+		status = "disabled";
+	};
+};
+
+&timers1 {
+	status = "okay";
+	st,prescaler = <0>;
+
+	bridge0: pwm-bridge {
+		compatible = "st,stm32-pwm-bridge";
+		status = "okay";
+
+		pinctrl-0 = <&tim1_ch1_pa8  &tim1_ch1n_pb13
+			     &tim1_ch2_pa9  &tim1_ch2n_pb14
+			     &tim1_ch3_pa10 &tim1_ch3n_pb15>;
+		pinctrl-names = "default";
+
+		st,leg-channels = <1 2 3>;
+
+		pwm-frequency-hz = <20000>;
+		deadtime-ns = <500>;
+		sync-trigger-enable;
+	};
+};
+
+&timers2 {
+	status = "okay";
+	st,prescaler = <63>;
+
+	hall_motor0: hall-xor {
+		compatible = "st,stm32-bldc-hall-xor";
+		status = "okay";
+
+		pinctrl-0 = <&tim2_ch1_pa15 &tim2_ch2_pb3 &tim2_ch3_pb10>;
+		pinctrl-names = "default";
+
+		hall-gpios = <&gpioa 15 0>, <&gpiob 3 0>, <&gpiob 10 0>;
+	};
+};
+
+&adc1 {
+	status = "okay";
+	st,adc-clock-source = "SYNC";
+	st,adc-prescaler = <4>;
+
+	adc_motor0: bldc-adc {
+		compatible = "st,stm32-bldc-adc";
+		status = "okay";
+
+		pwm = <&bridge0>;
+		channels = <2 12 15>; /* PA1, PB1, PB0 */
+	};
+};
+
+/ {
+	motor0: motor0 {
+		compatible = "zephyr,bldc-6step-bridge-hall", "zephyr,motor";
+		status = "okay";
+
+		pwm = <&bridge0>;
+		hall = <&hall_motor0>;
+		adc = <&adc_motor0>;
+		shunt-resistance-uohm = <330000>;
+		current-gain-milli = <1530>;
+		motor-pole-pairs = <7>;
+
+		motor0_feedback: feedback {
+			compatible = "zephyr,motor-feedback";
+		};
+	};
+
+	mc0: mc0 {
+		compatible = "zephyr,motor-control";
+		status = "okay";
+
+		motor = <&motor0>;
+		motor-sensor = <&motor0_feedback>;
+		control-period-ms = <2>; /* 500 Hz */
+		/* Seeds to tune with "mc speed": 1000 RPM of error commands 2 % of the supply,
+		 * and 10 % more every second it lasts.
+		 */
+		speed-pid-kp-micro = <20000>;
+		speed-pid-ki-micro = <100000>;
+		ramp-acceleration-rpm-per-s = <5000>;
+	};
+};
